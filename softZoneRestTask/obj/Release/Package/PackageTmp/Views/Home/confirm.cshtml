@@ -1,0 +1,238 @@
+﻿@model softZoneRestTask.Models.userOrder
+@{
+    Layout = null;
+    TempData.Keep();
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>confirm</title>
+    <link href="~/Content/themes/base/jquery-ui.css" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="~/vendor/bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" />
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.0/js/bootstrap.min.js"></script>
+    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+</head>
+<body>
+    <div style="margin-left:20px">
+        <p style="font-size:x-large;color:black;"><b> Your Data</b></p>
+        <table class="table caption-top">
+
+            <thead>
+                <tr>
+                    <th scope="col"> <i class="fa fa-user" style="color:orange"></i>  Name  </th>
+                    <th scope="col"><i class="fa fa-phone" style="color:orange"></i>  Phone  </th>
+                    <th scope="col"><i class="fa fa-envelope-o" style="color:orange"></i>  Email  </th>
+                    <th scope="col"><i class="fa fa-location-arrow" style="color:orange"></i>  Address </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th>@Model.user.username</th>
+                    <td>@Model.user.phone</td>
+                    <td>@Model.user.email</td>
+                    <td>@Model.user.address</td>
+                </tr>
+
+            </tbody>
+        </table>
+        <br />
+        <br />
+        @using (Html.BeginForm("save", "Home", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+        {
+            <table class="table caption-top">
+
+                <thead>
+                    <tr>
+                        <th scope="col"> </th>
+                        <th scope="col">Product</th>
+                        <th scope="col">price </th>
+                        <th scope="col">Quantity </th>
+                        <th scope="col">Total </th>
+                        <th scope="col"> </th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.items)
+                    {
+                        <tr>
+                            <th><img src="~/images/@item.image" alt="IMG-PRODUCT" style="width:100px;height:100px"></th>
+                            <td>@item.itemName</td>
+                            <td id="@item.itemId">@item.price</td>
+                            <td>
+                                <div class="center" style="width:150px">
+
+                                    <p>
+                                    </p><div class="input-group">
+                                        <span class="input-group-btn">
+                                            <button type="button" class="btn btn-danger btn-number" data-type="minus" data-field="@item.itemId">
+                                                <span class="glyphicon glyphicon-minus"></span>
+                                            </button>
+                                        </span>
+                                        <input type="text" name="@item.itemId" class="form-control input-number" value="1" min="1" max="100">
+                                        <span class="input-group-btn">
+                                            <button type="button" class="btn btn-success btn-number" data-type="plus" data-field="@item.itemId">
+                                                <span class="glyphicon glyphicon-plus"></span>
+                                            </button>
+                                        </span>
+                                    </div>
+                                    <p></p>
+                                </div>
+                            </td>
+                            <td id="total" class='@item.itemId' data-field="@item.price">@item.price</td>
+                            <td>
+
+                                <button type="button" onclick="location.href='@Url.Action("confirm", new { removeId = item.itemId })'" class="btn btn-danger">
+                                    <i class="fa fa-close"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            @Html.ActionLink("Back", "backToReserve", new { }, new { @class = "btn btn-warning", @type = "button", @style = "margin-left:420px" })
+
+            <input type="submit" value="checkout" class="btn btn-warning" style="margin-left:100px" />
+
+        }
+        @*<div class="form-group col-5" style="display:inline-block">
+            <div class="col-md-offset-2 col-md-10">
+                @Html.ActionLink("Back", "backToReserve", new { }, new { @class = "btn btn-warning", @type = "button", @style = "margin-left:10px" })
+
+
+            </div>
+        </div>*@
+        <br />
+        <br />
+
+        <div style="display:inline-block;font-size:x-large"><b>Total</b></div>
+        <div id="all" style="margin-left:100px;display:inline-block;font-size:x-large">0</div>
+        <hr />
+
+    </div>
+    <script src="~/Scripts/main.js"></script>
+    <script src="~/Scripts/jquery-1.12.4.min.js"></script>
+    @*<script src="~/Scripts/jquery-1.10.2.min.js"></script>*@
+    <script src="~/Scripts/jquery-ui-1.12.1.min.js"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
+    <script>
+        $('.btn-number').click(function (e) {
+            e.preventDefault();
+
+            fieldName = $(this).attr('data-field');
+            type = $(this).attr('data-type');
+            var input = $("input[name='" + fieldName + "']");
+            var currentVal = parseInt(input.val());
+            if (!isNaN(currentVal)) {
+                debugger;
+                if (type == 'minus') {
+
+                    if (currentVal > input.attr('min')) {
+                        input.val(currentVal - 1).change();
+                        $("td#" + fieldName).val($("td#" + fieldName).val() * input.val())
+                        var f = $("td." + fieldName)
+                        var c = $("td#" + fieldName)
+                       
+
+                        //console.log($(c[0].attr('data-field')))
+                        f[0].innerHTML = parseInt(f[0].innerHTML) - parseInt(c[0].innerHTML);
+                    }
+                    if (parseInt(input.val()) == input.attr('min')) {
+                        $(this).attr('disabled', true);
+                    }
+
+                } else if (type == 'plus') {
+
+                    if (currentVal < input.attr('max')) {
+                        input.val(currentVal + 1).change();
+                        var f = $("td." + fieldName)
+                        var c = $("td#" + fieldName)
+                        
+                        f[0].innerHTML = parseInt(f[0].innerHTML) + parseInt(c[0].innerHTML);
+                        //$("td."+fieldName).val($("td." + fieldName).val() * input.val())
+
+                    }
+                    if (parseInt(input.val()) == input.attr('max')) {
+                        $(this).attr('disabled', true);
+                    }
+
+                }
+            } else {
+                input.val(0);
+            }
+           
+            var xx = $("[id='total']")
+            sum = 0;
+            xx.toArray().forEach(d => {
+                
+                
+                if (d.innerHTML != undefined) {
+                    sum =sum+ parseInt(d.innerHTML)
+                  
+                   
+                }
+            })
+            $("#all").html(sum);
+        });
+        $('.input-number').focusin(function () {
+            $(this).data('oldValue', $(this).val());
+        });
+        $('.input-number').change(function () {
+
+            minValue = parseInt($(this).attr('min'));
+            maxValue = parseInt($(this).attr('max'));
+            valueCurrent = parseInt($(this).val());
+
+            name = $(this).attr('name');
+            if (valueCurrent >= minValue) {
+                $(".btn-number[data-type='minus'][data-field='" + name + "']").removeAttr('disabled')
+            } else {
+                alert('Sorry, the minimum value was reached');
+                $(this).val($(this).data('oldValue'));
+            }
+            if (valueCurrent <= maxValue) {
+                $(".btn-number[data-type='plus'][data-field='" + name + "']").removeAttr('disabled')
+            } else {
+                alert('Sorry, the maximum value was reached');
+                $(this).val($(this).data('oldValue'));
+            }
+
+
+        });
+        $(".input-number").keydown(function (e) {
+            // Allow: backspace, delete, tab, escape, enter and .
+            if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 190]) !== -1 ||
+                // Allow: Ctrl+A
+                (e.keyCode == 65 && e.ctrlKey === true) ||
+                // Allow: home, end, left, right
+                (e.keyCode >= 35 && e.keyCode <= 39)) {
+                // let it happen, don't do anything
+                return;
+            }
+            // Ensure that it is a number and stop the keypress
+            if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+                e.preventDefault();
+            }
+        });
+        $(document).ready(function () {
+            var xx = $("[id='total']")
+            sum = 0;
+            xx.toArray().forEach(d => {
+
+
+                if (d.innerHTML != undefined) {
+                    sum = sum + parseInt(d.innerHTML)
+
+
+                }
+            })
+            $("#all").html(sum);
+        })
+    </script>
+</body>
+</html>

@@ -1,0 +1,171 @@
+﻿@using PagedList.Mvc
+@model PagedList.IPagedList<softZoneRestTask.Models.Item>
+@{
+    Layout = null;
+    TempData.Keep();
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>getMenu</title>
+    <link href="~/Content/themes/base/jquery-ui.css" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="~/vendor/bootstrap/css/bootstrap.min.css">
+
+    <style>
+        .ul.pagination {
+            display: inline-block;
+            padding: 0;
+            margin: 0;
+        }
+
+        ul.pagination li {
+            display: inline;
+        }
+
+            ul.pagination li a {
+                color: black;
+                float: left;
+                padding: 8px 16px;
+                text-decoration: none;
+                transition: background-color .3s;
+            }
+
+                ul.pagination li a.active {
+                    background-color: #ff006e;
+                    color: deepskyblue;
+                }
+
+                ul.pagination li a:hover:not(.active) {
+                    background-color: deepskyblue;
+                }
+    </style>
+</head>
+<body>
+    <div>
+        @using (Html.BeginForm("reserve", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+            <div class="row isotope-grid">
+
+
+                @foreach (var item in Model)
+                {
+
+                    <div class="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item women" style="padding-left:20px;padding-top:30px; width:200px;display:inline">
+                        <!-- Block2 -->
+                        <div class="block2">
+                            <div class="block2-pic hov-img0 " style="height:200px">
+                                <img src="~/images/@item.image" alt="IMG-PRODUCT" style="width:100%;height:100%">
+
+
+                            </div>
+
+                            <div class=" col-sm-offset-7 justify-content-center align-items-center">
+                                <div class="block2-txt-child1 flex-col-l col-sm-offset-2 justify-content-center align-items-center ">
+                                    @* <a href="product-detail.html" class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6">*@
+                                    @* @Html.CheckBox("ids", new { id = "ids", value = item.itemId })*@
+                                    <input type="checkbox" name="ids" id="ids" value="@item.itemId" />
+                                    @item.itemName
+                                    @*  </a>*@
+
+                                </div>
+                                <div class=" col-sm-offset-7 justify-content-center align-items-center" style="width:200px">
+                                    <div class="block2-txt-child1 flex-col-l col-sm-offset-2 justify-content-center align-items-center ">
+                                        @* <a href="product-detail.html" class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6">*@
+                                        @item.desription
+                                        @*</a>*@
+
+
+                                    </div>
+
+                                </div>
+                                <div class=" col-sm-offset-7 justify-content-center align-items-center">
+                                    <div class="block2-txt-child1 flex-col-l col-sm-offset-2 justify-content-center align-items-center " style="justify-content:center">
+                                        @item.price<span>L.E</span>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                }
+
+
+            </div>
+            <div class="pagination" style="margin-left: 400px;width:200px">
+                <p>@Html.PagedListPager(Model, page => Url.Action("getMenu", new { page = page }))</p>
+
+            </div>
+            @Html.ActionLink("Back", "Index", new { }, new { @class = "btn btn-warning", @style = "margin-left:400px" })
+
+            <input type="submit" value="Next" class="btn btn-warning" style="margin-left:20px" />
+
+
+            @* @Html.ActionLink("Next", "test", new { }, new { @class = "btn btn-warning", @style = "margin-left:50px" })*@
+        }
+        @*@Ajax.ActionLink("Next", "test", "Home", new { }, new AjaxOptions()
+        {
+            OnBegin = "myFun",
+
+            //OnComplete = "myFun",
+        }, new { @class = "btn btn-warning" }) *@
+        <div id="noItem" style="color:red;display:@TempData["display"] ;margin-left:100px;font:bold">
+            you have to choose one item at least
+        </div>
+    </div>
+   
+        <script src="~/Scripts/main.js"></script>
+        <script src="~/Scripts/jquery-1.12.4.min.js"></script>
+        @*<script src="~/Scripts/jquery-1.10.2.min.js"></script>*@
+        <script src="~/Scripts/jquery-ui-1.12.1.min.js"></script>
+        <script src="~/Scripts/bootstrap.min.js"></script>
+
+        <script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
+        <script>
+            
+            @*return function myFun() {
+                debugger;
+
+                var ids = [];
+                $('input:checked').each(function () {
+                    ids.push($(this).attr("value"));
+                });
+                  
+
+                if (ids.length > 0) {
+                    $("#noItem").css("display", "none");
+                    $.ajax({
+                        url:'@Url.Action("test","Home")'
+                        // "/Home/test"
+                        ,
+                        type: "POST",
+                        datatype: "json",
+                        data: { ids: ids },
+                        success: function (data) {
+
+                            //                    response($.map(data, function (item) {
+                            //                      //  alert(item);
+                            window.location.href = "/Home/test";
+                       return { };
+
+                        }
+                    })
+                }
+                else {
+                    debugger;
+
+
+                    $("#noItem").css("display", "block");
+                };
+                return ids;
+            }*@
+
+        </script>
+    
+</body>
+</html>
